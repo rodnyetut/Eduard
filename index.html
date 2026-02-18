@@ -1,1 +1,1514 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+  <title>Андрианов Эдуард Михайлович - память</title>
+  
+  <!-- Подключение шрифтов Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ===== ЗВЁЗДНОЕ НЕБО ===== */
+    @keyframes starPulse {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
 
+    /* Эффект свечи */
+    @keyframes candleFlicker {
+      0%, 100% { 
+        opacity: 0.3;
+        transform: scale(1);
+      }
+      50% { 
+        opacity: 0.6;
+        transform: scale(1.02);
+      }
+    }
+
+    @keyframes sparkleFly {
+      0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    /* Эффект забеливания */
+    @keyframes whiteOut {
+      0% { 
+        opacity: 0;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0) 0%, transparent 100%);
+      }
+      30% { 
+        opacity: 0.3;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 80%);
+      }
+      60% { 
+        opacity: 0.6;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.6) 0%, transparent 60%);
+      }
+      100% { 
+        opacity: 1;
+        background: white;
+      }
+    }
+
+    /* Эффект появления контента */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Эффект старой бумаги */
+    @keyframes paperReveal {
+      0% {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Эффект печатающегося текста */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 3px;
+      height: 20px;
+      background-color: #4a3a2a;
+      margin-left: 5px;
+      animation: blink 1s infinite;
+      vertical-align: middle;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Cormorant Garamond', 'Georgia', serif;
+      background: #0a0c12;
+      color: #eaeef2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Звёздный фон (виден только ДО забеливания) */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at bottom, #0a0c12 0%, #030405 100%);
+      transition: opacity 2s ease;
+    }
+
+    .stars.fade-out {
+      opacity: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+      animation: starPulse 4s infinite ease-in-out;
+      display: block;
+      z-index: 1;
+    }
+
+    /* Эффект свечи */
+    .candle-effect {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      background: radial-gradient(circle at center, rgba(255, 150, 50, 0.08) 0%, transparent 70%);
+    }
+
+    .candle-effect.active {
+      opacity: 1;
+      animation: candleFlicker 3s infinite ease-in-out;
+    }
+
+    /* Забеливание */
+    .white-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .white-overlay.active {
+      opacity: 1;
+      animation: whiteOut 5s ease-in-out forwards;
+    }
+
+    /* ===== КНОПКА УСТАНОВКИ PWA ===== */
+    .install-banner {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: linear-gradient(135deg, #2c1810, #4a2a1a);
+      backdrop-filter: blur(10px);
+      border: 2px solid #ffb347;
+      border-radius: 60px;
+      padding: 12px 25px;
+      display: none;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 10px 30px rgba(255, 180, 70, 0.3);
+      animation: slideDown 0.5s ease;
+      max-width: 90%;
+    }
+
+    @keyframes slideDown {
+      from {
+        top: -100px;
+        opacity: 0;
+      }
+      to {
+        top: 20px;
+        opacity: 1;
+      }
+    }
+
+    .install-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .install-icon {
+      font-size: 28px;
+      animation: gentleFlicker 2s infinite;
+    }
+
+    .install-text {
+      color: #ffb347;
+      font-size: 16px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .install-button {
+      background: linear-gradient(135deg, #ffb347, #ff8c00);
+      border: none;
+      border-radius: 40px;
+      padding: 8px 20px;
+      color: #2c1810;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid #ffd700;
+    }
+
+    .install-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(255, 180, 70, 0.5);
+    }
+
+    .install-close {
+      background: none;
+      border: none;
+      color: #ffb347;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0 5px;
+      transition: all 0.3s ease;
+    }
+
+    .install-close:hover {
+      transform: scale(1.2);
+      color: #ff8c00;
+    }
+
+    @media screen and (max-width: 768px) {
+      .install-banner {
+        padding: 10px 15px;
+      }
+      .install-text {
+        font-size: 14px;
+        white-space: normal;
+        text-align: center;
+      }
+      .install-content {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+
+    /* ===== КНОПКА ОТКЛЮЧЕНИЯ ЗВУКА ===== */
+    .sound-control {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+      background: linear-gradient(135deg, #2c1810, #4a2a1a);
+      backdrop-filter: blur(10px);
+      border: 2px solid #ffb347;
+      border-radius: 60px;
+      padding: 12px 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(255, 180, 70, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: fadeIn 1s ease;
+    }
+
+    .sound-control:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 40px rgba(255, 180, 70, 0.5);
+    }
+
+    .sound-control.muted {
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      border-color: #888;
+    }
+
+    .sound-icon {
+      font-size: 24px;
+    }
+
+    .sound-text {
+      color: #ffb347;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .sound-control.muted .sound-text {
+      color: #888;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media screen and (max-width: 768px) {
+      .sound-control {
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 20px;
+      }
+      .sound-text {
+        font-size: 14px;
+      }
+    }
+
+    /* ШАПКА (видна при заходе) */
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+      opacity: 1;
+      transition: opacity 2s ease;
+      position: relative;
+      z-index: 50;
+    }
+
+    .header-top.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Счетчик свечей */
+    .candle-counter {
+      background: rgba(20, 30, 40, 0.85);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border-radius: 40px;
+      padding: 10px 20px;
+      border: 1px solid rgba(255, 150, 50, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .counter-icon {
+      font-size: 22px;
+      animation: gentleFlicker 2s infinite ease-in-out;
+    }
+
+    @keyframes gentleFlicker {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 10px rgba(255, 150, 50, 0.5); }
+    }
+
+    .counter-text {
+      font-family: 'EB Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #ffb347;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    /* Кнопка БИОГРАФИЯ */
+    .candle-button {
+      background: linear-gradient(135deg, rgba(40, 25, 15, 0.9) 0%, rgba(60, 30, 10, 0.9) 100%);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 2px solid rgba(255, 150, 50, 0.3);
+      border-radius: 60px;
+      padding: 12px 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .candle-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 150, 50, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .candle-button:hover {
+      border-color: rgba(255, 150, 50, 0.8);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(255, 150, 50, 0.15);
+    }
+
+    .candle-button:hover::before {
+      width: 350px;
+      height: 350px;
+    }
+
+    .candle-button:active {
+      transform: translateY(-1px);
+    }
+
+    .candle-button-icon {
+      font-size: 24px;
+      animation: gentleFlicker 2s infinite ease-in-out;
+      position: relative;
+      z-index: 2;
+    }
+
+    .candle-button-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 500;
+      color: #ffb347;
+      letter-spacing: 1px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Плавающие искорки */
+    .candle-spark {
+      position: fixed;
+      pointer-events: none;
+      z-index: 50;
+      font-size: 18px;
+      animation: sparkleFly 2s ease-out forwards;
+      filter: drop-shadow(0 0 5px rgba(255, 150, 50, 0.8));
+    }
+
+    /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
+    .wrap {
+      width: 100%;
+      max-width: 1200px;
+      position: relative;
+      z-index: 20;
+      margin: 20px;
+      padding: 0;
+    }
+
+    /* ШАПКА С ФОТО */
+    .main-header {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 35px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid rgba(200, 215, 230, 0.15);
+      flex-wrap: wrap;
+      opacity: 1;
+      transition: opacity 2s ease;
+      position: relative;
+      z-index: 50;
+    }
+
+    .main-header.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex: 0 0 150px;
+      border: 3px solid rgba(255, 215, 150, 0.5);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(20%) brightness(0.98);
+    }
+
+    .header-text {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 500;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      line-height: 1.2;
+    }
+
+    .dates {
+      font-family: 'EB Garamond', serif;
+      color: #ffd700;
+      margin-top: 12px;
+      font-size: clamp(18px, 3vw, 22px);
+      font-style: italic;
+      border-bottom: 2px dashed #c09b5e;
+      display: inline-block;
+      padding-bottom: 8px;
+    }
+
+    /* Счетчик дней */
+    .days-counter {
+      margin-top: 15px;
+      font-family: 'EB Garamond', serif;
+      font-size: 18px;
+      color: #c8d9ec;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 18px;
+      border-radius: 40px;
+      display: inline-block;
+      border: 1px solid #4a5c6e;
+      transition: opacity 2s ease;
+    }
+
+    .days-counter.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .days-number {
+      color: #ffb347;
+      font-weight: 600;
+      font-size: 22px;
+      margin: 0 5px;
+    }
+
+    /* ВИДЕО */
+    .video-section {
+      margin: 40px 0;
+      transition: opacity 2s ease, visibility 2s ease;
+      position: relative;
+      z-index: 50;
+    }
+
+    .video-section.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .video-wrapper {
+      background: #000000;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid #c09b5e;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 450px;
+    }
+
+    /* ===== СТАРАЯ БУМАГА ===== */
+    .paper-background {
+      position: relative;
+      background: #e8d9c0;
+      border-radius: 30px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 50px rgba(100, 50, 20, 0.3);
+      border: 2px solid #6b4b2d;
+      min-height: 500px;
+      z-index: 1;
+    }
+
+    /* Затемнение по краям для эффекта пергамента */
+    .paper-background::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      box-shadow: inset 0 0 50px rgba(60, 30, 10, 0.3);
+      border-radius: 30px;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* КОНТЕНТ, КОТОРЫЙ ПОЯВЛЯЕТСЯ ПОСЛЕ ЗАБЕЛИВАНИЯ */
+    .hidden-content {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 2s ease, visibility 2s ease;
+      position: relative;
+    }
+
+    .hidden-content.visible {
+      opacity: 1;
+      visibility: visible;
+      animation: paperReveal 2s ease-out forwards;
+    }
+
+    .hidden-content .paper-background {
+      animation: paperReveal 2s ease-out forwards;
+    }
+
+    .hidden-content .timeline-section,
+    .hidden-content .bio,
+    .hidden-content .info-row,
+    .hidden-content footer {
+      animation: fadeInUp 1.5s ease forwards;
+      opacity: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hidden-content.visible .timeline-section { animation-delay: 0.3s; }
+    .hidden-content.visible .bio { animation-delay: 0.6s; }
+    .hidden-content.visible .info-row { animation-delay: 0.9s; }
+    .hidden-content.visible footer { animation-delay: 1.2s; }
+
+    /* Цвета для текста на старой бумаге */
+    .hidden-content .timeline-title {
+      color: #2c1e0e;
+      text-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
+      font-weight: 700;
+    }
+
+    .hidden-content .timeline-content {
+      background: rgba(210, 180, 140, 0.8);
+      border-color: #6b4b2d;
+      color: #1a0e05;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .hidden-content .timeline-year {
+      color: #2c1e0e;
+      font-weight: 700;
+    }
+
+    .hidden-content .timeline-text {
+      color: #1a0e05;
+    }
+
+    .hidden-content .bio {
+      background: rgba(200, 170, 130, 0.7);
+      border-left-color: #6b4b2d;
+    }
+
+    .hidden-content .bio p {
+      color: #1a0e05;
+      font-weight: 500;
+    }
+
+    .hidden-content .coordinates-section {
+      background: rgba(190, 160, 120, 0.7);
+      border-color: #6b4b2d;
+    }
+
+    .hidden-content .coordinates-title {
+      color: #2c1e0e;
+      font-weight: 600;
+    }
+
+    .hidden-content .coord {
+      color: #1a0e05;
+      font-weight: 600;
+    }
+
+    .hidden-content .coord-sep {
+      color: #4a3a2a;
+    }
+
+    .hidden-content .caption-text {
+      color: #2c1e0e;
+      font-weight: 500;
+    }
+
+    .hidden-content .qr-section {
+      background: rgba(180, 150, 110, 0.8);
+      border-color: #6b4b2d;
+    }
+
+    .hidden-content .qr-label {
+      color: #2c1e0e;
+      font-weight: 600;
+    }
+
+    .hidden-content .qr-hint {
+      color: #2c1e0e;
+      font-weight: 500;
+    }
+
+    .hidden-content footer {
+      border-top-color: #6b4b2d;
+    }
+
+    .hidden-content .memorial-message {
+      background: rgba(160, 120, 80, 0.4);
+      border-left-color: #6b4b2d;
+      border-right-color: #6b4b2d;
+    }
+
+    .hidden-content .message-text {
+      color: #2c1e0e;
+      font-weight: 600;
+      text-shadow: 0 1px 3px rgba(255, 255, 255, 0.3);
+    }
+
+    .hidden-content .footer-bottom {
+      color: #2c1e0e;
+      font-weight: 500;
+    }
+
+    .hidden-content .memorial-sign {
+      color: #4a3a2a;
+      font-weight: 600;
+    }
+
+    .hidden-content .coordinates-button {
+      color: #1a0e05;
+      font-weight: 600;
+      background: rgba(140, 100, 60, 0.4);
+      border: 1px solid #6b4b2d;
+    }
+
+    .hidden-content .coordinates-button:hover {
+      background: rgba(160, 120, 80, 0.5);
+    }
+
+    /* ХРОНОЛОГИЯ ЖИЗНИ */
+    .timeline-section {
+      margin: 50px 0 40px;
+      scroll-margin-top: 30px;
+    }
+
+    .timeline-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      margin-bottom: 40px;
+      letter-spacing: 2px;
+    }
+
+    .timeline {
+      position: relative;
+      padding: 20px 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, #6b4b2d, #3a2a1a, #1a0e05);
+      border-radius: 4px;
+      box-shadow: 0 0 20px rgba(100, 50, 20, 0.3);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .timeline-item:nth-child(odd) {
+      flex-direction: row-reverse;
+    }
+
+    .timeline-content {
+      width: 45%;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .timeline-content:hover {
+      transform: scale(1.02);
+      border-color: #a07d5a;
+      box-shadow: 0 5px 30px rgba(100, 50, 20, 0.3);
+    }
+
+    .timeline-year {
+      font-family: 'EB Garamond', serif;
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .timeline-text {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: #6b4b2d;
+      border: 3px solid #e0c9a5;
+      border-radius: 50%;
+      box-shadow: 0 0 20px #8b6b4d;
+      z-index: 10;
+    }
+
+    /* БИОГРАФИЯ */
+    .bio {
+      margin: 40px 0;
+      padding: 30px;
+      border-radius: 20px;
+      border-left: 3px solid;
+      scroll-margin-top: 30px;
+    }
+
+    .bio p {
+      font-size: clamp(16px, 2.2vw, 18px);
+      margin-bottom: 15px;
+      text-align: left;
+      line-height: 1.8;
+      white-space: pre-line;
+      min-height: 200px;
+    }
+
+    /* КООРДИНАТЫ И QR */
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin: 50px 0;
+      scroll-margin-top: 30px;
+    }
+
+    .coordinates-section {
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border-radius: 24px;
+      padding: 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border: 2px solid;
+      flex-wrap: wrap;
+    }
+
+    .coordinates-icon {
+      font-size: 50px;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .coordinates-content {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .coordinates-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+
+    .coordinates-display {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px 20px;
+      border-radius: 50px;
+      display: inline-flex;
+      margin-bottom: 15px;
+      border: 1px solid;
+    }
+
+    .coord {
+      font-family: 'EB Garamond', monospace;
+      font-size: 22px;
+      letter-spacing: 2px;
+    }
+
+    .coord-sep {
+      font-size: 26px;
+      margin: 0 8px;
+    }
+
+    .caption-text {
+      font-family: 'Great Vibes', cursive;
+      font-size: 24px;
+      margin: 10px 0 15px;
+    }
+
+    .coordinates-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 25px;
+      border-radius: 40px;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .coordinates-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(100, 50, 20, 0.3);
+    }
+
+    .qr-section {
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border-radius: 24px;
+      padding: 30px;
+      text-align: center;
+      border: 2px solid;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .qr-label {
+      font-family: 'Great Vibes', cursive;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .qr-frame {
+      display: inline-block;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      border: 1px solid #6b4b2d;
+    }
+
+    .qr-frame img {
+      display: block;
+      width: 200px;
+      height: 200px;
+      max-width: 100%;
+    }
+
+    .qr-hint {
+      margin-top: 15px;
+      font-size: 16px;
+      font-style: italic;
+    }
+
+    /* ПОДВАЛ */
+    footer {
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 2px solid;
+      scroll-margin-top: 30px;
+    }
+
+    .memorial-message {
+      text-align: center;
+      padding: 25px;
+      background: rgba(160, 120, 80, 0.4);
+      border-radius: 20px;
+      border-left: 4px solid #6b4b2d;
+      border-right: 4px solid #6b4b2d;
+      margin-bottom: 25px;
+    }
+
+    .message-text {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(26px, 4vw, 32px);
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      font-style: italic;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .memorial-sign {
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* Стили для видео в хронологии - УБРАНА ЖЁЛТАЯ РАМКА */
+    .timeline-video {
+      width: 100%;
+      max-height: 200px;
+      border-radius: 10px;
+      margin-top: 15px;
+      border: none; /* Убрана рамка */
+      outline: none; /* Убрано обводка */
+    }
+
+    /* Убираем стандартные элементы управления видео (оставляем только play/pause) */
+    .timeline-video::-webkit-media-controls {
+      opacity: 0.5;
+    }
+
+    .timeline-video::-webkit-media-controls-enclosure {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 0 0 10px 10px;
+    }
+
+    /* АДАПТАЦИЯ */
+    @media screen and (max-width: 900px) {
+      .timeline::before { left: 30px; }
+      .timeline-item, .timeline-item:nth-child(odd) {
+        flex-direction: row;
+      }
+      .timeline-content { width: 80%; margin-left: 60px; }
+      .timeline-dot { left: 30px; }
+      .info-row { grid-template-columns: 1fr; }
+    }
+
+    @media screen and (max-width: 750px) {
+      .header-top { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media screen and (max-width: 480px) {
+      .main-header { flex-direction: column; text-align: center; }
+      .avatar { width: 130px; height: 130px; flex: 0 0 130px; }
+      .candle-button { padding: 10px 20px; }
+      .candle-button-text { font-size: 16px; }
+      .timeline-content { width: 85%; margin-left: 50px; padding: 15px; }
+      .timeline-year { font-size: 22px; }
+      .timeline-text { font-size: 16px; }
+      .coordinates-section { flex-direction: column; text-align: center; }
+      .paper-background { padding: 15px; }
+    }
+
+    /* Аудио плеер */
+    #bioAudio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- ЗВЁЗДНОЕ НЕБО -->
+  <div class="stars" id="stars"></div>
+  
+  <!-- ЭФФЕКТ СВЕЧИ -->
+  <div class="candle-effect" id="candleEffect"></div>
+  
+  <!-- ЗАБЕЛИВАНИЕ -->
+  <div class="white-overlay" id="whiteOverlay"></div>
+  
+  <!-- КНОПКА УСТАНОВКИ PWA -->
+  <div class="install-banner" id="installBanner">
+    <div class="install-content">
+      <span class="install-icon">📱</span>
+      <span class="install-text">Установите приложение для быстрого доступа</span>
+      <button class="install-button" id="installButton">Установить</button>
+      <button class="install-close" onclick="this.parentElement.parentElement.style.display='none'">✕</button>
+    </div>
+  </div>
+  
+  <!-- КНОПКА УПРАВЛЕНИЯ ЗВУКОМ -->
+  <div class="sound-control" id="soundControl" style="display: none;">
+    <span class="sound-icon" id="soundIcon">🔊</span>
+    <span class="sound-text" id="soundText">Выключить звук</span>
+  </div>
+  
+  <!-- Аудио -->
+  <audio id="bioAudio" preload="auto" loop>
+    <source src="https://github.com/levsergeevich324-prog/mem/raw/main/voice4.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="wrap">
+      
+      <!-- ШАПКА С КНОПКОЙ -->
+      <div class="header-top" id="headerTop">
+        <div class="candle-counter" id="candleCounter">
+          <span class="counter-icon">🕯️</span>
+          <span class="counter-text" id="counterText">0</span>
+        </div>
+        <button class="candle-button" id="candleButton">
+          <span class="candle-button-icon">📖</span>
+          <span class="candle-button-text">Биография</span>
+        </button>
+      </div>
+      
+      <!-- ШАПКА С ФОТО -->
+      <header class="main-header" id="mainHeader">
+        <div class="avatar">
+          <img id="photo" src="photo.jpg" alt="Фотография">
+        </div>
+        <div class="header-text">
+          <h1 id="name">Андрианов Эдуард Михайлович</h1>
+          <div class="dates" id="dates">
+            1938 - 2004
+          </div>
+          <div class="days-counter" id="daysCounter">
+            <span>Прошло дней с ухода:</span>
+            <span class="days-number" id="daysCount"></span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ВИДЕО -->
+      <section class="video-section" id="videoSection">
+        <div class="video-wrapper">
+          <video id="videoPlayer" controls playsinline preload="auto" muted autoplay loop>
+            <source src="https://github.com/levsergeevich324-prog/mem/raw/main/video.mp4" type="video/mp4">
+          </video>
+        </div>
+      </section>
+
+      <!-- КОНТЕНТ НА СТАРОЙ БУМАГЕ -->
+      <div class="hidden-content" id="hiddenContent">
+        <div class="paper-background">
+          
+          <!-- ХРОНОЛОГИЯ -->
+          <section class="timeline-section" id="timeline">
+            <h2 class="timeline-title">Хронология жизни</h2>
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-year">1938</div>
+                  <div class="timeline-text">Родился</div>
+                  <!-- короткое видео с автоматическим воспроизведением и без рамки -->
+                  <video class="timeline-video" autoplay muted loop playsinline>
+                    <source src="13let.mp4" type="video/mp4">
+                  </video>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-year">1950-е</div>
+                  <div class="timeline-text">Годы юности</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-year">1960-е</div>
+                  <div class="timeline-text">Создание семьи</div>
+                  <!-- короткое видео с автоматическим воспроизведением и без рамки -->
+                  <video class="timeline-video" autoplay muted loop playsinline>
+                    <source src="MilyasMuzhem.mp4" type="video/mp4">
+                  </video>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-year">1970-е</div>
+                  <div class="timeline-text">Трудовые годы</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-year">1980-е</div>
+                  <div class="timeline-text">Зрелые годы</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-year">1990-е</div>
+                  <div class="timeline-text">Время перемен</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-year">2004</div>
+                  <div class="timeline-text">Ушёл из жизни</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- БИОГРАФИЯ -->
+          <section class="bio" id="bio">
+            <p id="typing-text"></p>
+          </section>
+
+          <!-- КООРДИНАТЫ И QR -->
+         <div class="info-row" id="info">
+           <section class="coordinates-section">
+         <div class="coordinates-icon">🕊️</div>
+         <div class="coordinates-content">
+      <h3 class="coordinates-title">Место упокоения</h3>
+      <div class="coordinates-display">
+        <span class="coord">59.481326</span>
+        <span class="coord-sep">,</span>
+        <span class="coord">39.598650</span>
+      </div>
+      <div class="coordinates-caption">
+        <span class="caption-text">Земля, хранящая тепло рук...</span>
+      </div>
+      <a href="https://yandex.ru/maps/?ll=39.598650,59.481326&z=16&pt=39.598650,59.481326" 
+         target="_blank" class="coordinates-button">
+        <span class="button-icon">🗺️</span>
+        Открыть на карте
+      </a>
+    </div>
+  </section>
+
+            <div class="qr-section">
+              <div class="qr-label">Память всегда с вами</div>
+              <div class="qr-frame">
+                <img src="https://github.com/rodnyetut/Eduard/raw/main/qr2.png" alt="QR-код">
+              </div>
+              <div class="qr-hint">Отсканируйте, чтобы открыть страницу</div>
+            </div>
+          </div>
+
+          <!-- ПОДВАЛ -->
+          <footer id="footer">
+            <div class="memorial-message">
+              <p class="message-text">"Когда уходят хорошие люди, на небе зажигается новая звезда. Теперь их стало больше, а нам светлее</p>
+            </div>
+            <div class="footer-bottom">
+              <span class="memorial-sign">вечная память</span>
+              <span>Страница создана близкими</span>
+            </div>
+          </footer>
+          
+        </div>
+      </div>
+
+  </div>
+
+  <script>
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      if (!starsContainer) return;
+      starsContainer.innerHTML = '';
+      
+      for (let i = 0; i < 300; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 3 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 8 + 's';
+        star.style.animationDuration = Math.random() * 5 + 3 + 's';
+        star.style.opacity = Math.random() * 0.6 + 0.2;
+        starsContainer.appendChild(star);
+      }
+    }
+
+    const defaults = {
+      name: "Андрианов Эдуард Михайлович",
+      photo: "photo.jpg"
+    };
+
+    function setContent() {
+      document.getElementById('name').textContent = defaults.name;
+      document.getElementById('photo').src = defaults.photo;
+    }
+
+    function setupVideo() {
+      const video = document.getElementById('videoPlayer');
+      if (video) {
+        video.muted = true;
+        video.loop = true;
+        video.autoplay = true;
+        video.play().catch(e => console.log('Video autoplay failed'));
+      }
+    }
+
+    function typeWriter() {
+      const textElement = document.getElementById('typing-text');
+      if (!textElement) return;
+      
+      // Произвольный текст биографии (потом замените на нужный)
+      const fullText = `Андрианов Эдуард Михайлович родился в 1938 году.\n\nЗдесь будет полная биография Эдуарда Михайловича. Вы сможете добавить информацию о его жизни, семье, работе, увлечениях и важных событиях.\n\nЭтот текст можно будет заменить на нужный в любой момент.`;
+      
+      let i = 0;
+      textElement.innerHTML = '';
+      
+      function type() {
+        if (i < fullText.length) {
+          textElement.innerHTML += fullText.charAt(i);
+          i++;
+          setTimeout(type, 20);
+        } else {
+          const cursor = document.createElement('span');
+          cursor.className = 'typing-cursor';
+          textElement.appendChild(cursor);
+        }
+      }
+      type();
+    }
+
+    function updateDaysCounter() {
+      const daysElement = document.getElementById('daysCount');
+      if (!daysElement) return;
+      const deathDate = new Date(2004, 0, 1); // Январь 2004 (уточните дату)
+      const today = new Date();
+      const diffDays = Math.ceil(Math.abs(today - deathDate) / (1000 * 60 * 60 * 24));
+      daysElement.textContent = diffDays.toLocaleString();
+    }
+
+    function playBiographyAudio() {
+      const audio = document.getElementById('bioAudio');
+      if (audio) {
+        audio.currentTime = 0;
+        audio.loop = true;
+        audio.play().catch(e => console.log('Audio play failed'));
+      }
+    }
+
+    // Функция для запуска всех видео в хронологии
+    function playTimelineVideos() {
+      const videos = document.querySelectorAll('.timeline-video');
+      videos.forEach(video => {
+        video.play().catch(e => console.log('Video play failed:', e));
+      });
+    }
+
+    // Функция для скролла к хронологии
+    function scrollToTimeline() {
+      const timelineSection = document.getElementById('timeline');
+      if (timelineSection) {
+        timelineSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start'
+        });
+      }
+    }
+
+    // Управление звуком
+    function initSoundControl() {
+      const soundControl = document.getElementById('soundControl');
+      const soundIcon = document.getElementById('soundIcon');
+      const soundText = document.getElementById('soundText');
+      const audio = document.getElementById('bioAudio');
+      
+      let isMuted = false;
+      
+      soundControl.addEventListener('click', function() {
+        if (isMuted) {
+          // Включаем звук
+          audio.muted = false;
+          soundIcon.textContent = '🔊';
+          soundText.textContent = 'Выключить звук';
+          soundControl.classList.remove('muted');
+        } else {
+          // Выключаем звук
+          audio.muted = true;
+          soundIcon.textContent = '🔇';
+          soundText.textContent = 'Включить звук';
+          soundControl.classList.add('muted');
+        }
+        isMuted = !isMuted;
+      });
+    }
+
+    function initCandleFeature() {
+      const btn = document.getElementById('candleButton');
+      const effect = document.getElementById('candleEffect');
+      const overlay = document.getElementById('whiteOverlay');
+      const counter = document.getElementById('counterText');
+      const headerTop = document.getElementById('headerTop');
+      const mainHeader = document.getElementById('mainHeader');
+      const daysCounter = document.getElementById('daysCounter');
+      const video = document.getElementById('videoSection');
+      const hidden = document.getElementById('hiddenContent');
+      const stars = document.getElementById('stars');
+      const soundControl = document.getElementById('soundControl');
+      
+      let count = localStorage.getItem('candleCount') ? parseInt(localStorage.getItem('candleCount')) : 0;
+      counter.textContent = count;
+      
+      btn.addEventListener('click', function() {
+        count++;
+        counter.textContent = count;
+        localStorage.setItem('candleCount', count);
+        
+        effect.classList.add('active');
+        
+        headerTop.classList.add('hidden');
+        mainHeader.classList.add('hidden');
+        daysCounter.classList.add('hidden');
+        video.classList.add('hidden');
+        
+        setTimeout(() => {
+          overlay.classList.add('active');
+          stars.classList.add('fade-out');
+        }, 3000);
+        
+        setTimeout(() => {
+          overlay.classList.remove('active');
+          effect.classList.remove('active');
+          hidden.classList.add('visible');
+          
+          // Показываем кнопку управления звуком
+          soundControl.style.display = 'flex';
+          
+          typeWriter();
+          playBiographyAudio();
+          initSoundControl();
+          
+          // Запускаем видео в хронологии
+          setTimeout(() => {
+            playTimelineVideos();
+          }, 1000);
+          
+          // Скроллим к хронологии через небольшую задержку
+          setTimeout(() => {
+            scrollToTimeline();
+          }, 1500);
+          
+        }, 8000);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      setContent();
+      createStars();
+      updateDaysCounter();
+      setupVideo();
+      initCandleFeature();
+      setInterval(updateDaysCounter, 86400000);
+    });
+
+    window.addEventListener('resize', function() {
+      clearTimeout(window.resizeTimer);
+      window.resizeTimer = setTimeout(createStars, 200);
+    });
+    
+    // Защита от клика правой кнопкой мыши
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      alert('❌ Копирование материалов сайта запрещено');
+    });
+    
+    // Защита от клавиш копирования (Ctrl+C, Ctrl+U и т.д.)
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && (e.key === 'u' || e.key === 'c' || e.key === 's' || e.key === 'a')) {
+        e.preventDefault();
+        alert('❌ Этот сайт защищен от копирования');
+      }
+      if (e.key === 'F12') {
+        e.preventDefault();
+        alert('❌ Инструменты разработчика отключены');
+      }
+    });
+    
+    // Дополнительная защита от открытия DevTools
+    setInterval(function() {
+      if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
+        document.body.innerHTML = '<h1>❌ Доступ запрещен</h1><p>Закройте инструменты разработчика</p>';
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
