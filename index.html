@@ -11,10 +11,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
-    /* ===== ЗВЁЗДНОЕ НЕБО ===== */
-    @keyframes starPulse {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 1; }
+    /* ===== ИСКРЫ И УГОЛЬКИ (вместо звёзд) ===== */
+    @keyframes sparkFloat {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(0.8);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-120px) rotate(180deg) scale(0.2);
+        opacity: 0;
+      }
+    }
+
+    @keyframes emberGlow {
+      0%, 100% {
+        filter: drop-shadow(0 0 2px #ff6a00) drop-shadow(0 0 8px #ff4500);
+        opacity: 0.6;
+      }
+      50% {
+        filter: drop-shadow(0 0 5px #ffaa00) drop-shadow(0 0 15px #ff6347);
+        opacity: 1;
+      }
+    }
+
+    @keyframes emberPulse {
+      0%, 100% {
+        transform: scale(1);
+        background: radial-gradient(circle at 30% 30%, #ffaa00, #b22222);
+      }
+      50% {
+        transform: scale(1.2);
+        background: radial-gradient(circle at 30% 30%, #ffd700, #ff4500);
+      }
     }
 
     /* Эффект свечи */
@@ -90,6 +124,22 @@
       50% { opacity: 0; }
     }
 
+    /* Эффект жара от печи */
+    @keyframes heatWave {
+      0% {
+        opacity: 0.1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.3;
+        transform: scale(1.05);
+      }
+      100% {
+        opacity: 0.1;
+        transform: scale(1);
+      }
+    }
+
     .typing-cursor {
       display: inline-block;
       width: 3px;
@@ -115,7 +165,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Cormorant Garamond', 'Georgia', serif;
-      background: #0a0c12;
+      background: #1a0e05;
       color: #eaeef2;
       display: flex;
       justify-content: center;
@@ -125,8 +175,8 @@
       line-height: 1.6;
     }
 
-    /* Звёздный фон (виден только ДО забеливания) */
-    .stars {
+    /* Фон с эффектом жара (виден ДО забеливания) */
+    .fire-background {
       position: fixed;
       top: 0;
       left: 0;
@@ -134,22 +184,60 @@
       height: 100%;
       z-index: 0;
       pointer-events: none;
-      background: radial-gradient(ellipse at bottom, #0a0c12 0%, #030405 100%);
+      background: radial-gradient(ellipse at bottom, #2a1a0a 0%, #1a0e05 80%, #0a0502 100%);
       transition: opacity 2s ease;
     }
 
-    .stars.fade-out {
+    .fire-background.fade-out {
       opacity: 0;
     }
 
-    .star {
+    .fire-background::before {
+      content: '';
       position: absolute;
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
-      animation: starPulse 4s infinite ease-in-out;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(255, 100, 0, 0.1) 0%, transparent 50%);
+      animation: heatWave 8s infinite ease-in-out;
+    }
+
+    /* Искры */
+    .spark {
+      position: absolute;
+      background: linear-gradient(135deg, #ffd700, #ff8c00, #ff4500);
+      border-radius: 50% 50% 20% 50%;
+      transform: rotate(45deg);
+      box-shadow: 0 0 15px #ff6a00;
+      animation: sparkFloat 3s ease-out forwards, emberGlow 1.5s infinite alternate;
       display: block;
       z-index: 1;
+    }
+
+    /* Угольки */
+    .ember {
+      position: absolute;
+      background: radial-gradient(circle at 30% 30%, #b22222, #8b0000, #4a0404);
+      border-radius: 60% 40% 50% 50%;
+      box-shadow: 0 0 20px #ff4500;
+      animation: emberPulse 3s infinite ease-in-out, floatUp 4s ease-out forwards;
+      display: block;
+      z-index: 1;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-150px) scale(0.3);
+        opacity: 0;
+      }
     }
 
     /* Эффект свечи */
@@ -369,43 +457,44 @@
 
     /* Счетчик свечей */
     .candle-counter {
-      background: rgba(20, 30, 40, 0.85);
+      background: rgba(30, 20, 10, 0.85);
       backdrop-filter: blur(5px);
       -webkit-backdrop-filter: blur(5px);
       border-radius: 40px;
       padding: 10px 20px;
-      border: 1px solid rgba(255, 150, 50, 0.3);
+      border: 1px solid rgba(255, 100, 0, 0.4);
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
     .counter-icon {
       font-size: 22px;
       animation: gentleFlicker 2s infinite ease-in-out;
+      filter: drop-shadow(0 0 5px #ff8c00);
     }
 
     @keyframes gentleFlicker {
       0%, 100% { opacity: 0.8; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 10px rgba(255, 150, 50, 0.5); }
+      50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 10px rgba(255, 100, 0, 0.8); }
     }
 
     .counter-text {
       font-family: 'EB Garamond', serif;
       font-size: 22px;
       font-weight: 600;
-      color: #ffb347;
+      color: #ff8c00;
       min-width: 30px;
       text-align: center;
     }
 
     /* Кнопка БИОГРАФИЯ */
     .candle-button {
-      background: linear-gradient(135deg, rgba(40, 25, 15, 0.9) 0%, rgba(60, 30, 10, 0.9) 100%);
+      background: linear-gradient(135deg, rgba(60, 35, 15, 0.9) 0%, rgba(80, 40, 10, 0.9) 100%);
       backdrop-filter: blur(5px);
       -webkit-backdrop-filter: blur(5px);
-      border: 2px solid rgba(255, 150, 50, 0.3);
+      border: 2px solid rgba(255, 100, 0, 0.4);
       border-radius: 60px;
       padding: 12px 30px;
       display: inline-flex;
@@ -413,7 +502,7 @@
       gap: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
       position: relative;
       overflow: hidden;
     }
@@ -426,15 +515,15 @@
       width: 0;
       height: 0;
       border-radius: 50%;
-      background: rgba(255, 150, 50, 0.2);
+      background: rgba(255, 100, 0, 0.2);
       transform: translate(-50%, -50%);
       transition: width 0.6s ease, height 0.6s ease;
     }
 
     .candle-button:hover {
-      border-color: rgba(255, 150, 50, 0.8);
+      border-color: rgba(255, 100, 0, 0.9);
       transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(255, 150, 50, 0.15);
+      box-shadow: 0 8px 30px rgba(255, 100, 0, 0.25);
     }
 
     .candle-button:hover::before {
@@ -457,7 +546,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 18px;
       font-weight: 500;
-      color: #ffb347;
+      color: #ff8c00;
       letter-spacing: 1px;
       position: relative;
       z-index: 2;
@@ -470,7 +559,7 @@
       z-index: 50;
       font-size: 18px;
       animation: sparkleFly 2s ease-out forwards;
-      filter: drop-shadow(0 0 5px rgba(255, 150, 50, 0.8));
+      filter: drop-shadow(0 0 5px rgba(255, 100, 0, 0.9));
     }
 
     /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
@@ -490,7 +579,7 @@
       align-items: center;
       margin-bottom: 35px;
       padding-bottom: 25px;
-      border-bottom: 1px solid rgba(200, 215, 230, 0.15);
+      border-bottom: 1px solid rgba(255, 140, 0, 0.15);
       flex-wrap: wrap;
       opacity: 1;
       transition: opacity 2s ease;
@@ -509,7 +598,7 @@
       border-radius: 50%;
       overflow: hidden;
       flex: 0 0 150px;
-      border: 3px solid rgba(255, 215, 150, 0.5);
+      border: 3px solid rgba(255, 140, 0, 0.4);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
     }
 
@@ -518,7 +607,7 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      filter: grayscale(20%) brightness(0.98);
+      filter: grayscale(30%) brightness(0.95) sepia(10%);
     }
 
     .header-text {
@@ -538,11 +627,11 @@
 
     .dates {
       font-family: 'EB Garamond', serif;
-      color: #ffd700;
+      color: #ff8c00;
       margin-top: 12px;
       font-size: clamp(18px, 3vw, 22px);
       font-style: italic;
-      border-bottom: 2px dashed #c09b5e;
+      border-bottom: 2px dashed #b85e00;
       display: inline-block;
       padding-bottom: 8px;
     }
@@ -552,12 +641,12 @@
       margin-top: 15px;
       font-family: 'EB Garamond', serif;
       font-size: 18px;
-      color: #c8d9ec;
-      background: rgba(0, 0, 0, 0.3);
+      color: #e0c9a5;
+      background: rgba(0, 0, 0, 0.4);
       padding: 8px 18px;
       border-radius: 40px;
       display: inline-block;
-      border: 1px solid #4a5c6e;
+      border: 1px solid #b85e00;
       transition: opacity 2s ease;
     }
 
@@ -567,7 +656,7 @@
     }
 
     .days-number {
-      color: #ffb347;
+      color: #ff8c00;
       font-weight: 600;
       font-size: 22px;
       margin: 0 5px;
@@ -588,10 +677,10 @@
     }
 
     .video-wrapper {
-      background: #000000;
+      background: #1a0e05;
       border-radius: 16px;
       overflow: hidden;
-      border: 2px solid #c09b5e;
+      border: 2px solid #b85e00;
       box-shadow: 0 10px 30px rgba(0,0,0,0.6);
       width: 100%;
       max-width: 800px;
@@ -611,7 +700,7 @@
       background: #e8d9c0;
       border-radius: 30px;
       padding: 30px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 50px rgba(100, 50, 20, 0.3);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 50px rgba(150, 80, 20, 0.4);
       border: 2px solid #6b4b2d;
       min-height: 500px;
       z-index: 1;
@@ -625,7 +714,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      box-shadow: inset 0 0 50px rgba(60, 30, 10, 0.3);
+      box-shadow: inset 0 0 50px rgba(100, 50, 10, 0.4);
       border-radius: 30px;
       pointer-events: none;
       z-index: 4;
@@ -798,9 +887,9 @@
       transform: translateX(-50%);
       width: 4px;
       height: 100%;
-      background: linear-gradient(to bottom, #6b4b2d, #3a2a1a, #1a0e05);
+      background: linear-gradient(to bottom, #b85e00, #8b4513, #4a2a0a);
       border-radius: 4px;
-      box-shadow: 0 0 20px rgba(100, 50, 20, 0.3);
+      box-shadow: 0 0 20px rgba(255, 100, 0, 0.3);
     }
 
     .timeline-item {
@@ -829,8 +918,8 @@
 
     .timeline-content:hover {
       transform: scale(1.02);
-      border-color: #a07d5a;
-      box-shadow: 0 5px 30px rgba(100, 50, 20, 0.3);
+      border-color: #b85e00;
+      box-shadow: 0 5px 30px rgba(255, 100, 0, 0.2);
     }
 
     .timeline-year {
@@ -851,10 +940,10 @@
       transform: translateX(-50%);
       width: 20px;
       height: 20px;
-      background: #6b4b2d;
+      background: #b85e00;
       border: 3px solid #e0c9a5;
       border-radius: 50%;
-      box-shadow: 0 0 20px #8b6b4d;
+      box-shadow: 0 0 20px #ff8c00;
       z-index: 10;
     }
 
@@ -900,6 +989,7 @@
     .coordinates-icon {
       font-size: 50px;
       animation: float 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px #ff8c00);
     }
 
     @keyframes float {
@@ -957,7 +1047,7 @@
 
     .coordinates-button:hover {
       transform: translateY(-3px);
-      box-shadow: 0 5px 20px rgba(100, 50, 20, 0.3);
+      box-shadow: 0 5px 20px rgba(255, 100, 0, 0.2);
     }
 
     .qr-section {
@@ -1039,17 +1129,16 @@
       text-transform: uppercase;
     }
 
-    /* Стили для видео в хронологии - УБРАНА ЖЁЛТАЯ РАМКА */
+    /* Стили для видео в хронологии */
     .timeline-video {
       width: 100%;
       max-height: 200px;
       border-radius: 10px;
       margin-top: 15px;
-      border: none; /* Убрана рамка */
-      outline: none; /* Убрано обводка */
+      border: none;
+      outline: none;
     }
 
-    /* Убираем стандартные элементы управления видео (оставляем только play/pause) */
     .timeline-video::-webkit-media-controls {
       opacity: 0.5;
     }
@@ -1093,8 +1182,8 @@
   </style>
 </head>
 <body>
-  <!-- ЗВЁЗДНОЕ НЕБО -->
-  <div class="stars" id="stars"></div>
+  <!-- ФОН С ИСКРАМИ И УГОЛЬКАМИ -->
+  <div class="fire-background" id="fireBackground"></div>
   
   <!-- ЭФФЕКТ СВЕЧИ -->
   <div class="candle-effect" id="candleEffect"></div>
@@ -1128,7 +1217,7 @@
       <!-- ШАПКА С КНОПКОЙ -->
       <div class="header-top" id="headerTop">
         <div class="candle-counter" id="candleCounter">
-          <span class="counter-icon">🕯️</span>
+          <span class="counter-icon">🔥</span>
           <span class="counter-text" id="counterText">0</span>
         </div>
         <button class="candle-button" id="candleButton">
@@ -1186,14 +1275,14 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                   <div class="timeline-year">1950-е</div>
-                  <div class="timeline-text">Годы юности</div>
+                  <div class="timeline-text">Годы юности, начало обучения печному делу</div>
                 </div>
               </div>
               <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                   <div class="timeline-year">1960-е</div>
-                  <div class="timeline-text">Создание семьи</div>
+                  <div class="timeline-text">Создание семьи, первые самостоятельно сложенные печи</div>
                   <!-- короткое видео с автоматическим воспроизведением и без рамки -->
                   <video class="timeline-video" autoplay muted loop playsinline>
                     <source src="20let.mp4" type="video/mp4">
@@ -1204,28 +1293,28 @@
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                   <div class="timeline-year">1970-е</div>
-                  <div class="timeline-text">Трудовые годы</div>
+                  <div class="timeline-text">Трудовые годы - признанный мастер-печник</div>
                 </div>
               </div>
               <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                   <div class="timeline-year">1980-е</div>
-                  <div class="timeline-text">Зрелые годы</div>
+                  <div class="timeline-text">Зрелые годы - передавал опыт ученикам</div>
                 </div>
               </div>
               <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                   <div class="timeline-year">1990-е</div>
-                  <div class="timeline-text">Время перемен</div>
+                  <div class="timeline-text">Время перемен - продолжал согревать людей теплом своих печей</div>
                 </div>
               </div>
               <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                   <div class="timeline-year">2004</div>
-                  <div class="timeline-text">Ушёл из жизни</div>
+                  <div class="timeline-text">Ушёл из жизни, оставив после себя тепло в домах и сердцах</div>
                 </div>
               </div>
             </div>
@@ -1239,7 +1328,7 @@
           <!-- КООРДИНАТЫ И QR -->
          <div class="info-row" id="info">
            <section class="coordinates-section">
-         <div class="coordinates-icon">🕊️</div>
+         <div class="coordinates-icon">🔥</div>
          <div class="coordinates-content">
       <h3 class="coordinates-title">Место упокоения</h3>
       <div class="coordinates-display">
@@ -1248,7 +1337,7 @@
         <span class="coord">39.598650</span>
       </div>
       <div class="coordinates-caption">
-        <span class="caption-text">Земля, хранящая тепло рук...</span>
+        <span class="caption-text">Земля, хранящая тепло рук мастера...</span>
       </div>
       <a href="https://yandex.ru/maps/?ll=39.598650,59.481326&z=16&pt=39.598650,59.481326" 
          target="_blank" class="coordinates-button">
@@ -1270,7 +1359,7 @@
           <!-- ПОДВАЛ -->
           <footer id="footer">
             <div class="memorial-message">
-              <p class="message-text">"Когда уходят хорошие люди, на небе зажигается новая звезда. Теперь их стало больше, а нам светлее</p>
+              <p class="message-text">"Как печник согревал дома, так и память о нём согревает наши сердца"</p>
             </div>
             <div class="footer-bottom">
               <span class="memorial-sign">вечная память</span>
@@ -1284,23 +1373,40 @@
   </div>
 
   <script>
-    function createStars() {
-      const starsContainer = document.getElementById('stars');
-      if (!starsContainer) return;
-      starsContainer.innerHTML = '';
+    function createSparksAndEmbers() {
+      const fireContainer = document.getElementById('fireBackground');
+      if (!fireContainer) return;
+      fireContainer.innerHTML = '';
       
-      for (let i = 0; i < 300; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        const size = Math.random() * 3 + 1;
-        star.style.width = size + 'px';
-        star.style.height = size + 'px';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 8 + 's';
-        star.style.animationDuration = Math.random() * 5 + 3 + 's';
-        star.style.opacity = Math.random() * 0.6 + 0.2;
-        starsContainer.appendChild(star);
+      // Создаем искры (больше, легче, ярче)
+      for (let i = 0; i < 200; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'spark';
+        const size = Math.random() * 6 + 2;
+        spark.style.width = size + 'px';
+        spark.style.height = size * 0.7 + 'px';
+        spark.style.left = Math.random() * 100 + '%';
+        spark.style.top = (Math.random() * 80 + 20) + '%';
+        spark.style.animationDelay = Math.random() * 5 + 's';
+        spark.style.animationDuration = Math.random() * 4 + 2 + 's';
+        spark.style.opacity = Math.random() * 0.8 + 0.3;
+        spark.style.transform = `rotate(${Math.random() * 90}deg)`;
+        fireContainer.appendChild(spark);
+      }
+      
+      // Создаем угольки (тяжелее, темнее, пульсируют)
+      for (let i = 0; i < 80; i++) {
+        const ember = document.createElement('div');
+        ember.className = 'ember';
+        const size = Math.random() * 12 + 5;
+        ember.style.width = size + 'px';
+        ember.style.height = size * 0.8 + 'px';
+        ember.style.left = Math.random() * 100 + '%';
+        ember.style.top = (Math.random() * 70 + 30) + '%';
+        ember.style.animationDelay = Math.random() * 3 + 's';
+        ember.style.animationDuration = Math.random() * 5 + 3 + 's';
+        ember.style.opacity = Math.random() * 0.7 + 0.3;
+        fireContainer.appendChild(ember);
       }
     }
 
@@ -1328,8 +1434,8 @@
       const textElement = document.getElementById('typing-text');
       if (!textElement) return;
       
-      // Произвольный текст биографии (потом замените на нужный)
-      const fullText = `Андрианов Эдуард Михайлович родился в 1938 году.\n\nЗдесь будет полная биография Эдуарда Михайловича. Вы сможете добавить информацию о его жизни, семье, работе, увлечениях и важных событиях.\n\nЭтот текст можно будет заменить на нужный в любой момент.`;
+      // Текст биографии с упоминанием профессии печника
+      const fullText = `Андрианов Эдуард Михайлович родился в 1938 году.\n\nБыл известным мастером-печником, чьи руки умели не только класть кирпичи, но и вкладывать душу в каждую печь. Его работа согревала десятки домов, а тепло от сложенных им печей чувствуется до сих пор.\n\nЗдесь будет полная биография Эдуарда Михайловича. Вы сможете добавить информацию о его жизни, семье, работе, увлечениях и важных событиях.\n\nЭтот текст можно будет заменить на нужный в любой момент.`;
       
       let i = 0;
       textElement.innerHTML = '';
@@ -1422,7 +1528,7 @@
       const daysCounter = document.getElementById('daysCounter');
       const video = document.getElementById('videoSection');
       const hidden = document.getElementById('hiddenContent');
-      const stars = document.getElementById('stars');
+      const fireBackground = document.getElementById('fireBackground');
       const soundControl = document.getElementById('soundControl');
       
       let count = localStorage.getItem('candleCount') ? parseInt(localStorage.getItem('candleCount')) : 0;
@@ -1442,7 +1548,7 @@
         
         setTimeout(() => {
           overlay.classList.add('active');
-          stars.classList.add('fade-out');
+          fireBackground.classList.add('fade-out');
         }, 3000);
         
         setTimeout(() => {
@@ -1473,16 +1579,23 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       setContent();
-      createStars();
+      createSparksAndEmbers();
       updateDaysCounter();
       setupVideo();
       initCandleFeature();
       setInterval(updateDaysCounter, 86400000);
+      
+      // Периодически обновляем искры и угольки для разнообразия
+      setInterval(() => {
+        if (!document.getElementById('fireBackground').classList.contains('fade-out')) {
+          createSparksAndEmbers();
+        }
+      }, 30000);
     });
 
     window.addEventListener('resize', function() {
       clearTimeout(window.resizeTimer);
-      window.resizeTimer = setTimeout(createStars, 200);
+      window.resizeTimer = setTimeout(createSparksAndEmbers, 200);
     });
     
     // Защита от клика правой кнопкой мыши
